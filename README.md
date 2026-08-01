@@ -46,15 +46,19 @@ Method `hitungDenda()` dan getter `masaPinjamHari` dideklarasikan di `Koleksi` t
 Properti seperti `_judul`, `_id`, dan `_sedangDipinjam` dibuat private, hanya bisa diakses lewat getter atau method resmi yang disediakan class `Koleksi`.
 
 ## Referensi UI
-[Diisi setelah menentukan referensi]
+Desain mengacu pada pola umum aplikasi manajemen koleksi/perpustakaan: list berbasis card, badge warna untuk membedakan jenis koleksi, dan indikator status (tersedia/dipinjam) yang jelas secara visual.
 
 ## Screenshot Aplikasi
 
-### Android
-[Diisi setelah build & testing]
+Aplikasi berhasil dijalankan dan diuji di tiga platform: Web, Android, dan iOS.
 
-### iOS
-[Diisi setelah build & testing]
+![Tampilan gabungan tiga platform](screenshots/full-stack.png)
 
-### Web
-[Diisi setelah build & testing]
+### Web (Chrome)
+![Screenshot Web](screenshots/web.png)
+
+### Android (Emulator)
+![Screenshot Android](screenshots/android.png)
+
+### iOS (Simulator)
+![Screenshot iOS](screenshots/ios.png)
