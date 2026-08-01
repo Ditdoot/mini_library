@@ -69,15 +69,66 @@ class _HomePageState extends State<HomePage> {
     return '';
   }
 
-  void _toggle(Koleksi k) {
+  void _toggle(Koleksi k) async {
+  if (k.sedangDipinjam) {
+    final hariTelat = await _tanyaHariTelat();
+    if (hariTelat == null) return; // user batal
+
+    final denda = k.hitungDenda(hariTelat);
     setState(() {
-      if (k.sedangDipinjam) {
-        k.kembalikan();
-      } else {
-        k.pinjam();
-      }
+      k.kembalikan();
     });
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          denda > 0
+              ? '${k.judul} dikembalikan. Denda: Rp$denda ($hariTelat hari telat)'
+              : '${k.judul} dikembalikan tepat waktu. Tidak ada denda.',
+        ),
+        backgroundColor: denda > 0 ? Colors.red : Colors.green,
+      ),
+    );
+  } else {
+    setState(() {
+      k.pinjam();
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${k.judul} berhasil dipinjam.')),
+    );
   }
+}
+
+Future<int?> _tanyaHariTelat() {
+  final controller = TextEditingController(text: '0');
+  return showDialog<int>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Konfirmasi Pengembalian'),
+      content: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        decoration: const InputDecoration(
+          labelText: 'Berapa hari telat? (0 jika tepat waktu)',
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Batal'),
+        ),
+        FilledButton(
+          onPressed: () {
+            final hari = int.tryParse(controller.text) ?? 0;
+            Navigator.pop(context, hari < 0 ? 0 : hari);
+          },
+          child: const Text('Konfirmasi'),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
