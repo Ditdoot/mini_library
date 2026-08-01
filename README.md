@@ -1,17 +1,60 @@
-# perpustakaan_mini
+# Perpustakaan Mini - Tugas Bootcamp Flutter #2
 
-A new Flutter project.
+## Identitas
+- Nama: Alexandra Anindita Purnadi
+- NIM: 2902632611
 
-## Getting Started
+## Deskripsi Aplikasi
+Perpustakaan Mini adalah aplikasi manajemen koleksi perpustakaan sederhana yang mencatat tiga jenis koleksi (Buku, Majalah, E-book), dengan fitur peminjaman, pengembalian, dan perhitungan denda otomatis sesuai aturan masing-masing jenis koleksi.
 
-This project is a starting point for a Flutter application.
+## Fitur Utama
+- Melihat daftar koleksi (Buku, Majalah, E-book)
+- Melihat detail tiap koleksi
+- Meminjam koleksi
+- Mengembalikan koleksi
+- Menghitung denda keterlambatan secara otomatis
 
-A few resources to get you started if this is your first Flutter project:
+## Rancangan Database
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### Tabel Koleksi (induk)
+| Field | Tipe | Keterangan |
+|---|---|---|
+| id | String | ID unik koleksi |
+| judul | String | Nama koleksi |
+| sedangDipinjam | bool | Status peminjaman |
+| tanggalPinjam | DateTime? | Tanggal koleksi dipinjam |
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Field tambahan per jenis koleksi
+| Class | Field tambahan | Masa Pinjam | Denda/hari |
+|---|---|---|---|
+| Buku | penulis (String) | 14 hari | Rp1.000 |
+| Majalah | edisi (int) | 7 hari | Rp500 |
+| Ebook | ukuranFileMb (double) | 21 hari | Rp0 (tidak ada denda) |
+
+## Penerapan Konsep OOP
+
+### Abstraction
+Class `Koleksi` dibuat sebagai `abstract class`, sehingga tidak bisa langsung diinstansiasi. Class ini hanya berfungsi sebagai cetakan untuk `Buku`, `Majalah`, dan `Ebook`.
+
+### Inheritance
+`Buku`, `Majalah`, dan `Ebook` masing-masing meng-extend `Koleksi`, sehingga otomatis mewarisi properti dan method umum seperti `pinjam()` dan `kembalikan()`.
+
+### Polymorphism
+Method `hitungDenda()` dan getter `masaPinjamHari` dideklarasikan di `Koleksi` tanpa implementasi, lalu di-override berbeda-beda di tiap class turunan. Saat dipanggil lewat satu `List<Koleksi>` yang sama, hasilnya berbeda tergantung jenis objeknya.
+
+### Encapsulation
+Properti seperti `_judul`, `_id`, dan `_sedangDipinjam` dibuat private, hanya bisa diakses lewat getter atau method resmi yang disediakan class `Koleksi`.
+
+## Referensi UI
+[Diisi setelah menentukan referensi]
+
+## Screenshot Aplikasi
+
+### Android
+[Diisi setelah build & testing]
+
+### iOS
+[Diisi setelah build & testing]
+
+### Web
+[Diisi setelah build & testing]
