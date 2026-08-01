@@ -11,8 +11,13 @@ Perpustakaan Mini adalah aplikasi manajemen koleksi perpustakaan sederhana yang 
 - Melihat daftar koleksi (Buku, Majalah, E-book)
 - Melihat detail tiap koleksi
 - Meminjam koleksi
-- Mengembalikan koleksi
+- Mengembalikan koleksi dengan konfirmasi jumlah hari telat
 - Menghitung denda keterlambatan secara otomatis
+- Filter daftar koleksi berdasarkan jenis (Buku/Majalah/E-book)
+- Menambah koleksi baru langsung dari aplikasi
+- Mengedit data koleksi (judul dan atribut lain, jenis tidak dapat diubah)
+- Menghapus koleksi
+- Animasi transisi saat status peminjaman berubah
 
 ## Rancangan Database
 

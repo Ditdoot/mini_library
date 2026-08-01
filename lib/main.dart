@@ -100,6 +100,211 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+void _tambahKoleksi() {
+  String jenisTerpilih = 'Buku';
+  final judulController = TextEditingController();
+  final field2Controller = TextEditingController(); // penulis/edisi/ukuran
+
+  showDialog(
+    context: context,
+    builder: (context) => StatefulBuilder(
+      builder: (context, setDialogState) => AlertDialog(
+        title: const Text('Tambah Koleksi Baru'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DropdownButtonFormField<String>(
+                value: jenisTerpilih,
+                decoration: const InputDecoration(labelText: 'Jenis Koleksi'),
+                items: const [
+                  DropdownMenuItem(value: 'Buku', child: Text('Buku')),
+                  DropdownMenuItem(value: 'Majalah', child: Text('Majalah')),
+                  DropdownMenuItem(value: 'E-book', child: Text('E-book')),
+                ],
+                onChanged: (value) {
+                  setDialogState(() => jenisTerpilih = value!);
+                },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: judulController,
+                decoration: const InputDecoration(labelText: 'Judul'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: field2Controller,
+                keyboardType: jenisTerpilih == 'Buku'
+                    ? TextInputType.text
+                    : TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: jenisTerpilih == 'Buku'
+                      ? 'Penulis'
+                      : jenisTerpilih == 'Majalah'
+                          ? 'Edisi (angka)'
+                          : 'Ukuran File MB (angka)',
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final judul = judulController.text.trim();
+              if (judul.isEmpty) return;
+
+              final idBaru =
+                  '${jenisTerpilih[0]}${(daftarKoleksi.length + 1).toString().padLeft(3, '0')}';
+
+              Koleksi koleksiBaru;
+              if (jenisTerpilih == 'Buku') {
+                koleksiBaru = Buku(
+                  judul,
+                  idBaru,
+                  field2Controller.text.trim().isEmpty
+                      ? 'Tidak diketahui'
+                      : field2Controller.text.trim(),
+                );
+              } else if (jenisTerpilih == 'Majalah') {
+                koleksiBaru = Majalah(
+                  judul,
+                  idBaru,
+                  int.tryParse(field2Controller.text) ?? 0,
+                );
+              } else {
+                koleksiBaru = Ebook(
+                  judul,
+                  idBaru,
+                  double.tryParse(field2Controller.text) ?? 0.0,
+                );
+              }
+
+              setState(() {
+                daftarKoleksi.add(koleksiBaru);
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('Tambah'),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+void _hapusKoleksi(Koleksi k) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Hapus Koleksi'),
+      content: Text('Yakin mau hapus "${k.judul}"?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Batal'),
+        ),
+        FilledButton(
+          style: FilledButton.styleFrom(backgroundColor: Colors.red),
+          onPressed: () {
+            setState(() {
+              daftarKoleksi.remove(k);
+            });
+            Navigator.pop(context);
+          },
+          child: const Text('Hapus'),
+        ),
+      ],
+    ),
+  );
+}
+
+void _editKoleksi(Koleksi k, int index) {
+  final judulController = TextEditingController(text: k.judul);
+  String field2Awal = '';
+  if (k is Buku) field2Awal = k.penulis;
+  if (k is Majalah) field2Awal = k.edisi.toString();
+  if (k is Ebook) field2Awal = k.ukuranFileMb.toString();
+  final field2Controller = TextEditingController(text: field2Awal);
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Edit ${_labelJenis(k)}'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: judulController,
+              decoration: const InputDecoration(labelText: 'Judul'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: field2Controller,
+              keyboardType: k is Buku ? TextInputType.text : TextInputType.number,
+              decoration: InputDecoration(
+                labelText: k is Buku
+                    ? 'Penulis'
+                    : k is Majalah
+                        ? 'Edisi (angka)'
+                        : 'Ukuran File MB (angka)',
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Batal'),
+        ),
+        FilledButton(
+          onPressed: () {
+            final judul = judulController.text.trim();
+            if (judul.isEmpty) return;
+
+            Koleksi koleksiBaru;
+            if (k is Buku) {
+              koleksiBaru = Buku(
+                judul,
+                k.id,
+                field2Controller.text.trim().isEmpty
+                    ? 'Tidak diketahui'
+                    : field2Controller.text.trim(),
+              );
+            } else if (k is Majalah) {
+              koleksiBaru = Majalah(
+                judul,
+                k.id,
+                int.tryParse(field2Controller.text) ?? 0,
+              );
+            } else {
+              koleksiBaru = Ebook(
+                judul,
+                k.id,
+                double.tryParse(field2Controller.text) ?? 0.0,
+              );
+            }
+
+            setState(() {
+              daftarKoleksi[daftarKoleksi.indexOf(k)] = koleksiBaru;
+            });
+            Navigator.pop(context);
+          },
+          child: const Text('Simpan'),
+        ),
+      ],
+    ),
+  );
+}
+
 Future<int?> _tanyaHariTelat() {
   final controller = TextEditingController(text: '0');
   return showDialog<int>(
@@ -151,6 +356,11 @@ Future<int?> _tanyaHariTelat() {
             ],
           ),
         ],
+      ),
+      
+      floatingActionButton: FloatingActionButton(
+        onPressed: _tambahKoleksi,
+        child: const Icon(Icons.add),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(12),
@@ -209,6 +419,19 @@ Future<int?> _tanyaHariTelat() {
                           fontSize: 12,
                         ),
                         child: Text(koleksi.sedangDipinjam ? 'Dipinjam' : 'Tersedia'),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        onPressed: () => _editKoleksi(koleksi, index),
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline, size: 18),
+                        color: Colors.red,
+                        onPressed: () => _hapusKoleksi(koleksi),
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
                       ),
                     ],
                   ),
