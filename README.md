@@ -1,11 +1,11 @@
-# Perpustakaan Mini - Tugas Bootcamp Flutter #2
+# BookNest - Tugas Bootcamp Flutter #2
 
 ## Identitas
 - Nama: Alexandra Anindita Purnadi
 - NIM: 2902632611
 
 ## Deskripsi Aplikasi
-Perpustakaan Mini adalah aplikasi manajemen koleksi perpustakaan sederhana yang mencatat tiga jenis koleksi (Buku, Majalah, E-book), dengan fitur peminjaman, pengembalian, dan perhitungan denda otomatis sesuai aturan masing-masing jenis koleksi.
+BookNest adalah aplikasi manajemen koleksi perpustakaan sederhana yang mencatat tiga jenis koleksi (Buku, Majalah, E-book), dengan fitur peminjaman, pengembalian, dan perhitungan denda otomatis sesuai aturan masing-masing jenis koleksi.
 
 ## Fitur Utama
 - Melihat daftar koleksi (Buku, Majalah, E-book)

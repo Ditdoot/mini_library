@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'models/koleksi.dart';
 import 'models/buku.dart';
 import 'models/majalah.dart';
@@ -14,7 +15,7 @@ class PerpustakaanApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Perpustakaan Mini',
+      title: 'BookNest',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorSchemeSeed: Colors.teal,
@@ -109,7 +110,7 @@ void _tambahKoleksi() {
     context: context,
     builder: (context) => StatefulBuilder(
       builder: (context, setDialogState) => AlertDialog(
-        title: const Text('Tambah Koleksi Baru'),
+        title: const Text('BookNest'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -339,7 +340,14 @@ Future<int?> _tanyaHariTelat() {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perpustakaan Mini'),
+        title: Text(
+          'BookNest',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,
+            fontSize: 22,
+            letterSpacing: 0.5,
+          ),
+        ),
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.filter_list),
