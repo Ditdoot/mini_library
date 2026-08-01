@@ -39,6 +39,14 @@ class _HomePageState extends State<HomePage> {
     Ebook('Atomic Habits', 'E001', 4.2),
   ];
 
+  // Filter aktif: null = tampilkan semua
+  String? filterJenis;
+
+  List<Koleksi> get daftarTertampil {
+    if (filterJenis == null) return daftarKoleksi;
+    return daftarKoleksi.where((k) => _labelJenis(k) == filterJenis).toList();
+  }
+
   // Warna badge berbeda tiap jenis koleksi (visualisasi polymorphism)
   Color _warnaJenis(Koleksi k) {
     if (k is Buku) return Colors.blue;
@@ -76,16 +84,35 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perpustakaan Mini'),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.filter_list),
+            onSelected: (value) {
+              setState(() {
+                filterJenis = value == 'Semua' ? null : value;
+              });
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: 'Semua', child: Text('Semua')),
+              const PopupMenuItem(value: 'Buku', child: Text('Buku')),
+              const PopupMenuItem(value: 'Majalah', child: Text('Majalah')),
+              const PopupMenuItem(value: 'E-book', child: Text('E-book')),
+            ],
+          ),
+        ],
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(12),
-        itemCount: daftarKoleksi.length,
+        itemCount: daftarTertampil.length,
         itemBuilder: (context, index) {
-          final koleksi = daftarKoleksi[index];
+          final koleksi = daftarTertampil[index];
           final warna = _warnaJenis(koleksi);
 
-          return Card(
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
             margin: const EdgeInsets.only(bottom: 12),
+            child: Card(
+              margin: EdgeInsets.zero,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -110,24 +137,27 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const Spacer(),
-                      Icon(
-                        koleksi.sedangDipinjam
-                            ? Icons.lock_outline
-                            : Icons.check_circle_outline,
-                        color: koleksi.sedangDipinjam
-                            ? Colors.red
-                            : Colors.green,
-                        size: 18,
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(scale: animation, child: child),
+                        child: Icon(
+                          koleksi.sedangDipinjam
+                              ? Icons.lock_outline
+                              : Icons.check_circle_outline,
+                          key: ValueKey(koleksi.sedangDipinjam),
+                          color: koleksi.sedangDipinjam ? Colors.red : Colors.green,
+                          size: 18,
+                        ),
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        koleksi.sedangDipinjam ? 'Dipinjam' : 'Tersedia',
+                      AnimatedDefaultTextStyle(
+                        duration: const Duration(milliseconds: 300),
                         style: TextStyle(
-                          color: koleksi.sedangDipinjam
-                              ? Colors.red
-                              : Colors.green,
+                          color: koleksi.sedangDipinjam ? Colors.red : Colors.green,
                           fontSize: 12,
                         ),
+                        child: Text(koleksi.sedangDipinjam ? 'Dipinjam' : 'Tersedia'),
                       ),
                     ],
                   ),
@@ -164,6 +194,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+          ),
           );
         },
       ),
